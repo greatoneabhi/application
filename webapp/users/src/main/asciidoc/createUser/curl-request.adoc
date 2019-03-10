@@ -1,0 +1,4 @@
+[source,bash]
+----
+$ curl 'http://localhost:8080/applications/api/v1/users' -i -X POST -H 'Content-Type: application/json' -d '{"guid":"ca1b7fad-bbf1-4758-bf8f-9bf25a5e2003","emailId":"testuser@abc.com","firstName":"Test","lastName":"User","phoneNumber":"23424","message":"test message"}'
+----

@@ -1,0 +1,55 @@
+= Reference Documentation
+:toc: left
+
+This is documentation for rest API's
+
+== Get user not found
+
+=== Curl Command
+
+include::getUserNotFound/curl-request.adoc[]
+
+=== Http Request
+
+include::getUserNotFound/http-request.adoc[]
+
+=== Http Response
+
+include::getUserNotFound/http-response.adoc[]
+
+== Get user request
+
+=== Curl Command
+
+include::getUser/curl-request.adoc[]
+
+=== Http Request
+
+include::getUser/http-request.adoc[]
+
+=== Http Response
+
+include::getUser/http-response.adoc[]
+
+=== Response Fields
+
+include::getUser/response-fields.adoc[]
+
+== Create User request
+
+=== Curl Command
+
+include::createUser/curl-request.adoc[]
+
+=== Http Request
+
+include::createUser/http-request.adoc[]
+
+=== Http Response
+
+include::createUser/http-response.adoc[]
+
+=== Response Fields
+
+include::createUser/response-fields.adoc[]
+

@@ -1,0 +1,28 @@
+|===
+|Path|Type|Description
+
+|`guid`
+|`String`
+|object id of the user
+
+|`firstName`
+|`String`
+|First name of the user
+
+|`lastName`
+|`String`
+|Last Name of the user
+
+|`emailId`
+|`String`
+|Email Id of the user
+
+|`phoneNumber`
+|`String`
+|Phone Number of the user
+
+|`message`
+|`String`
+|Message if any
+
+|===
