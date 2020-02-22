@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Implementation-Title: common-lib
 Implementation-Version: 0.0.1-SNAPSHOT
-Built-By: abhishek
+Built-By: abhi
 Implementation-Vendor-Id: org.springframework.samples
-Build-Jdk: 1.8.0_151
+Build-Jdk: 1.8.0_242
 Implementation-URL: http://projects.spring.io/spring-boot/application/
  common/common-lib/
 Created-By: Maven Integration for Eclipse

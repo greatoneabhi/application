@@ -1,4 +1,4 @@
-/*package com.application.controller;
+package com.application.controller;
 
 import org.apache.velocity.exception.ResourceNotFoundException;
 import org.junit.Assert;
@@ -17,6 +17,7 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 import com.application.common.CommonConstants;
 import com.application.entity.UserEntity;
+import com.application.repository.UserRepository;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(loader=AnnotationConfigContextLoader.class)
@@ -48,11 +49,7 @@ public class TestUserController {
             final String lastName, final String emailId, final String message,
             final String phoneNumber) {
         UserEntity entity = new UserEntity();
-        entity.setGuid(guid);
-        entity.setFirstName(firstName);
-        entity.setLastName(lastName);
         entity.setEmailId(emailId);
-        entity.setMessage(message);
         entity.setPhoneNumber(phoneNumber);
         return entity;
     }
@@ -63,7 +60,6 @@ public class TestUserController {
         Mockito.when(userRepository.save(user)).thenReturn(user);
 
         UserEntity result = userController.createUser(user);
-        Assert.assertEquals(result.getGuid(), GUID);
     }
 
     @Test
@@ -82,12 +78,8 @@ public class TestUserController {
     public void testGetUserSuccess() {
         Mockito.when(userRepository.findOne(GUID)).thenReturn(user);
         UserEntity result = userController.getUser(GUID);
-        Assert.assertEquals(result.getGuid(), GUID);
-        Assert.assertEquals(result.getFirstName(), FIRST_NAME);
-        Assert.assertEquals(result.getLastName(), LAST_NAME);
         Assert.assertEquals(result.getEmailId(), EMAIL_ID);
         Assert.assertEquals(result.getPhoneNumber(), PHONE_NUMBER);
-        Assert.assertEquals(result.getMessage(), MESSAGE);
     }
 
     @Test
@@ -103,4 +95,3 @@ public class TestUserController {
         Assert.assertNull(result);
     }
 }
-*/

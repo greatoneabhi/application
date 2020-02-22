@@ -1,4 +1,4 @@
-/*package com.application.controller;
+package com.application.controller;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
@@ -21,9 +21,9 @@ import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.http.MediaType;
-import org.springframework.restdocs.RestDocumentation;
+import org.springframework.restdocs.JUnitRestDocumentation;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
@@ -31,11 +31,12 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.application.entity.UserEntity;
+import com.application.repository.UserRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = Application.class)
+@ContextConfiguration(classes = Application.class)
 @WebAppConfiguration
 public class ApiDocumentation {
 
@@ -53,7 +54,7 @@ public class ApiDocumentation {
     private UserEntity user;
 
     @Rule
-    public final RestDocumentation restDocumentation = new RestDocumentation("src/main/asciidoc");
+    public final JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation("src/main/asciidoc");
 
     @Autowired
     private WebApplicationContext context;
@@ -69,11 +70,7 @@ public class ApiDocumentation {
     UserEntity createEntity(final String guid, final String firstName, final String lastName, final String emailId,
             final String message, final String phoneNumber) {
         UserEntity entity = new UserEntity();
-        entity.setGuid(guid);
-        entity.setFirstName(firstName);
-        entity.setLastName(lastName);
         entity.setEmailId(emailId);
-        entity.setMessage(message);
         entity.setPhoneNumber(phoneNumber);
         return entity;
     }
@@ -186,4 +183,3 @@ public class ApiDocumentation {
         addIncludeIndex("== Get user not found", "getUserNotFound", false);
     }
 }
-*/
