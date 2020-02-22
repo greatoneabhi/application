@@ -6,11 +6,11 @@ import java.util.List;
 import org.apache.velocity.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Service;
 
 import com.application.common.CommonConstants;
 import com.application.entity.UserEntity;
+import com.application.repository.UserRepository;
 import com.application.service.RestService;
 
 @Service
@@ -52,9 +52,5 @@ public class UserServiceImpl implements RestService {
         userIterable.forEach(user -> usersList.add(user));
         return usersList;
     }
-
-}
-
-interface UserRepository extends CrudRepository<UserEntity, String> {
 
 }
