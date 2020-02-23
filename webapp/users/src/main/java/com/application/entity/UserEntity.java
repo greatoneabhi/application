@@ -4,18 +4,17 @@ import org.springframework.data.cassandra.mapping.Column;
 import org.springframework.data.cassandra.mapping.PrimaryKey;
 import org.springframework.data.cassandra.mapping.Table;
 
-import com.application.common.Guid;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 @JsonInclude(Include.NON_NULL)
 @Table(value="cf_user")
 public class UserEntity {
-
+	
     @PrimaryKey
     @Column
     private String emailId;
-
+    
     @Column
     private String name;
 
@@ -25,7 +24,7 @@ public class UserEntity {
     @Column
     private String password;
 
-    /**
+	/**
      * @return the password
      */
     public String getPassword() {

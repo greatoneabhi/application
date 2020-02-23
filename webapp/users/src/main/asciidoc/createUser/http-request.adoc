@@ -1,9 +1,0 @@
-[source,http,options="nowrap"]
-----
-POST /applications/api/v1/users HTTP/1.1
-Content-Type: application/json
-Host: localhost
-Content-Length: 160
-
-{"guid":"ca1b7fad-bbf1-4758-bf8f-9bf25a5e2003","emailId":"testuser@abc.com","firstName":"Test","lastName":"User","phoneNumber":"23424","message":"test message"}
-----

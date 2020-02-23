@@ -1,8 +1,0 @@
-[source,http,options="nowrap"]
-----
-HTTP/1.1 200 OK
-Content-Type: application/json;charset=UTF-8
-Content-Length: 160
-
-{"guid":"ca1b7fad-bbf1-4758-bf8f-9bf25a5e2003","emailId":"testuser@abc.com","firstName":"Test","lastName":"User","phoneNumber":"23424","message":"test message"}
-----
