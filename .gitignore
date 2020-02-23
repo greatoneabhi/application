@@ -1,5 +1,6 @@
 **/target
 **/.settings
+**/asciidoc
 *.adoc
 *.project
 *.classpath
