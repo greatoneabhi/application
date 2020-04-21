@@ -9,6 +9,7 @@ import org.springframework.data.cassandra.config.CassandraSessionFactoryBean;
 import org.springframework.data.cassandra.core.CassandraAdminTemplate;
 import org.springframework.data.cassandra.mapping.CassandraPersistentEntity;
 import org.springframework.data.cassandra.mapping.CassandraPersistentProperty;
+import org.springframework.data.cassandra.mapping.PrimaryKey;
 import org.springframework.data.cassandra.mapping.PrimaryKeyClass;
 import org.springframework.data.mapping.PropertyHandler;
 import org.springframework.util.Assert;
@@ -61,7 +62,7 @@ public class CassandraSessionFactory extends CassandraSessionFactoryBean {
             @Override
             public void doWithPersistentProperty(CassandraPersistentProperty prop) {
 
-                if(prop.isAnnotationPresent(PrimaryKeyClass.class)) {
+                if(prop.isAnnotationPresent(PrimaryKeyClass.class) || prop.isAnnotationPresent(PrimaryKey.class)) {
                     return;
                 }
 

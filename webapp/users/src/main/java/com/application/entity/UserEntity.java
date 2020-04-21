@@ -4,17 +4,12 @@ import org.springframework.data.cassandra.mapping.Column;
 import org.springframework.data.cassandra.mapping.PrimaryKey;
 import org.springframework.data.cassandra.mapping.Table;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-
-@JsonInclude(Include.NON_NULL)
 @Table(value="cf_user")
 public class UserEntity {
 	
-    @PrimaryKey
-    @Column
-    private String emailId;
-    
+	@PrimaryKey
+	private UserKey primaryKey;
+	
     @Column
     private String name;
 
@@ -23,6 +18,20 @@ public class UserEntity {
 
     @Column
     private String password;
+    
+	/**
+	 * @return the primaryKey
+	 */
+	public UserKey getPrimaryKey() {
+		return primaryKey;
+	}
+
+	/**
+	 * @param primaryKey the primaryKey to set
+	 */
+	public void setPrimaryKey(UserKey primaryKey) {
+		this.primaryKey = primaryKey;
+	}
 
 	/**
      * @return the password
@@ -50,20 +59,6 @@ public class UserEntity {
      */
     public void setName(String name) {
         this.name = name;
-    }
-
-    /**
-     * @return the emailId
-     */
-    public String getEmailId() {
-        return emailId;
-    }
-
-    /**
-     * @param emailId the emailId to set
-     */
-    public void setEmailId(String emailId) {
-        this.emailId = emailId;
     }
 
     /**

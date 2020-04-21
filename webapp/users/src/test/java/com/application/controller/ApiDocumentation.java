@@ -73,7 +73,6 @@ public class ApiDocumentation {
             final String message, final String phoneNumber, final String password) {
         UserEntity entity = new UserEntity();
         entity.setName(firstName);
-        entity.setEmailId(emailId);
         entity.setPhoneNumber(phoneNumber);
         entity.setPassword(password);
         return entity;
@@ -137,7 +136,7 @@ public class ApiDocumentation {
 
     @After
     public void tearDown() {
-        userRepository.delete(EMAIL_ID);
+        //userRepository.delete(EMAIL_ID);
     }
 
     @Test

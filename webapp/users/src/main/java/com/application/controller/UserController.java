@@ -18,6 +18,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.application.entity.UserEntity;
 import com.application.logger.Loggable;
+import com.application.model.User;
 import com.application.service.impl.UserServiceImpl;
 
 @CrossOrigin
@@ -26,35 +27,34 @@ import com.application.service.impl.UserServiceImpl;
 @Scope(value = WebApplicationContext.SCOPE_REQUEST)
 public class UserController {
 
-    @Autowired
-    UserServiceImpl userServiceImpl;
+	@Autowired
+	UserServiceImpl userServiceImpl;
 
-    @RequestMapping(value = "/users", method = RequestMethod.POST)
-    @ResponseStatus(value = HttpStatus.CREATED)
-    @Loggable
-    public UserEntity createUser(@Valid @RequestBody final UserEntity user) {
-        return userServiceImpl.create(user);
-    }
+	@RequestMapping(value = "/users", method = RequestMethod.POST)
+	@ResponseStatus(value = HttpStatus.CREATED)
+	@Loggable
+	public UserEntity createUser(@Valid @RequestBody final User user) {
+		return userServiceImpl.create(user);
+	}
 
-    @RequestMapping(value = "/users/{guid}", method = RequestMethod.GET)
-    @ResponseStatus(value = HttpStatus.OK)
-    @Loggable
-    public UserEntity getUser(@PathVariable String guid) {
-        return userServiceImpl.get(guid);
-    }
+	@RequestMapping(value = "/users/{username}", method = RequestMethod.GET)
+	@ResponseStatus(value = HttpStatus.OK)
+	@Loggable
+	public UserEntity getUser(@PathVariable String username) {
+		return userServiceImpl.get(username);
+	}
 
-    @RequestMapping(value = "/users/{guid}", method = RequestMethod.PUT)
-    @ResponseStatus(value = HttpStatus.OK)
-    @Loggable
-    public UserEntity replaceUser(@PathVariable String guid,
-            @Valid @RequestBody UserEntity user) {
-        return userServiceImpl.update(guid, user);
-    }
+	@RequestMapping(value = "/users/{username}", method = RequestMethod.PUT)
+	@ResponseStatus(value = HttpStatus.OK)
+	@Loggable
+	public UserEntity replaceUser(@PathVariable String username, @Valid @RequestBody User user) {
+		return userServiceImpl.update(username, user);
+	}
 
-    @RequestMapping(value = "/users", method = RequestMethod.GET)
-    @ResponseStatus(value = HttpStatus.OK)
-    @Loggable
-    public List<UserEntity> getAllUesrs() {
-        return userServiceImpl.getAll();
-    }
+	@RequestMapping(value = "/users", method = RequestMethod.GET)
+	@ResponseStatus(value = HttpStatus.OK)
+	@Loggable
+	public List<UserEntity> getAllUsers() {
+		return userServiceImpl.getAll();
+	}
 }
