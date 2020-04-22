@@ -3,16 +3,15 @@ package com.application.common;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
-import org.springframework.cassandra.core.cql.CqlStringUtils;
 import org.springframework.data.cassandra.config.CassandraSessionFactoryBean;
-import org.springframework.data.cassandra.core.CassandraAdminTemplate;
-import org.springframework.data.cassandra.mapping.CassandraPersistentEntity;
-import org.springframework.data.cassandra.mapping.CassandraPersistentProperty;
-import org.springframework.data.cassandra.mapping.PrimaryKey;
-import org.springframework.data.cassandra.mapping.PrimaryKeyClass;
+import org.springframework.data.cassandra.core.cql.keyspace.CqlStringUtils;
+import org.springframework.data.cassandra.core.mapping.CassandraPersistentEntity;
+import org.springframework.data.cassandra.core.mapping.CassandraPersistentProperty;
+import org.springframework.data.cassandra.core.mapping.PrimaryKey;
+import org.springframework.data.cassandra.core.mapping.PrimaryKeyClass;
 import org.springframework.data.mapping.PropertyHandler;
-import org.springframework.util.Assert;
 
 import com.datastax.driver.core.ColumnMetadata;
 import com.datastax.driver.core.DataType;
@@ -36,13 +35,13 @@ public class CassandraSessionFactory extends CassandraSessionFactoryBean {
         Collection<? extends CassandraPersistentEntity<?>> entities = getConverter()
                 .getMappingContext().getTableEntities();
         for (CassandraPersistentEntity<?> entity : entities) {
-            final TableMetadata tableMetadata = getCassandraAdminOperations().getTableMetadata(
+            final Optional<TableMetadata> tableMetadata = getCassandraAdminOperations().getTableMetadata(
                     getKeyspaceName(), entity.getTableName());
             final List<String> queryList = alterTable(entity.getTableName().toString(),
                     entity, tableMetadata);
             if(!queryList.isEmpty()) {
                 for(String query : queryList) {
-                    getCassandraAdminOperations().execute(query);
+                    getCassandraAdminOperations().getCqlOperations().execute(query);
                 }
             }
             getCassandraAdminOperations().createTable(true, entity.getTableName(), entity.getType(), null);
@@ -52,10 +51,10 @@ public class CassandraSessionFactory extends CassandraSessionFactoryBean {
     private static List<String> alterTable(
             final String tableName,
             final CassandraPersistentEntity<?> entity,
-            final TableMetadata table) {
+            final Optional<TableMetadata> tableMetadata) {
         final List<String> result = new ArrayList<String>();
 
-        if(table == null) {
+        if(!tableMetadata.isPresent()) {
             return result;
         }
         entity.doWithProperties(new PropertyHandler<CassandraPersistentProperty>() {
@@ -68,7 +67,7 @@ public class CassandraSessionFactory extends CassandraSessionFactoryBean {
 
                 String columnName = prop.getColumnName().toCql();
                 DataType columnDataType = prop.getDataType();
-                ColumnMetadata columnMetadata = table.getColumn(columnName.toLowerCase());
+                ColumnMetadata columnMetadata = tableMetadata.get().getColumn(columnName.toLowerCase());
 
                 if (columnMetadata != null && columnDataType.equals(columnMetadata.getType())) {
                     return;
@@ -90,7 +89,7 @@ public class CassandraSessionFactory extends CassandraSessionFactoryBean {
                     str.append("TYPE ");
                 }
 
-                str.append(CqlStringUtils.toCql(columnDataType));
+                str.append(CqlStringUtils.escapeSingle(columnDataType));
 
                 str.append(';');
                 result.add(str.toString());

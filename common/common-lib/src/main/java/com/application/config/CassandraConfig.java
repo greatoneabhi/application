@@ -4,15 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cassandra.core.keyspace.CreateKeyspaceSpecification;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
+import org.springframework.data.cassandra.config.AbstractCassandraConfiguration;
 import org.springframework.data.cassandra.config.CassandraClusterFactoryBean;
 import org.springframework.data.cassandra.config.CassandraSessionFactoryBean;
 import org.springframework.data.cassandra.config.SchemaAction;
-import org.springframework.data.cassandra.config.java.AbstractCassandraConfiguration;
+import org.springframework.data.cassandra.core.cql.keyspace.CreateKeyspaceSpecification;
 import org.springframework.data.cassandra.repository.config.EnableCassandraRepositories;
 
 import com.application.common.CassandraSessionFactory;
@@ -39,13 +39,13 @@ public class CassandraConfig extends AbstractCassandraConfiguration {
 		cluster.setContactPoints(env.getProperty("cassandra.contactpoints"));
 		cluster.setKeyspaceCreations(getKeyspaceCreations());
 		cluster.setPort(Integer.parseInt(env.getProperty("cassandra.port")));
-
+		cluster.setJmxReportingEnabled(false);
 		return cluster;
 	}
 
 	@Override
 	@Bean
-	public CassandraSessionFactory session() throws ClassNotFoundException {
+	public CassandraSessionFactory session() {
 		CassandraSessionFactory session = new CassandraSessionFactory();
 		Cluster cluster = cluster().getObject();
 		System.out.println("Cluster value: " + cluster);
@@ -55,22 +55,9 @@ public class CassandraConfig extends AbstractCassandraConfiguration {
 		return session;
 	}
 
-	/*
-	 * @Override
-	 * 
-	 * @Bean public CassandraSessionFactoryBean session() throws
-	 * ClassNotFoundException { CassandraSessionFactoryBean session = new
-	 * CassandraSessionFactoryBean(); Cluster cluster = cluster().getObject();
-	 * System.out.println("Cluster value: "+cluster); session.setCluster(cluster);
-	 * session.setConverter(cassandraConverter());
-	 * session.setKeyspaceName(getKeyspaceName());
-	 * session.setSchemaAction(SchemaAction.CREATE_IF_NOT_EXISTS); return session; }
-	 */
-
 	@Override
 	protected List<CreateKeyspaceSpecification> getKeyspaceCreations() {
-		CreateKeyspaceSpecification keyspaceSpecification = CreateKeyspaceSpecification.createKeyspace()
-				.name(getKeyspaceName()).withSimpleReplication(1).ifNotExists();
+		CreateKeyspaceSpecification keyspaceSpecification = CreateKeyspaceSpecification.createKeyspace(getKeyspaceName()).withSimpleReplication(1).ifNotExists();
 		List<CreateKeyspaceSpecification> keyspaces = new ArrayList<CreateKeyspaceSpecification>();
 		keyspaces.add(keyspaceSpecification);
 		return keyspaces;
