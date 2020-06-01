@@ -1,6 +1,7 @@
 package com.application.controller;
 
 import java.util.List;
+import java.util.Objects;
 
 import javax.validation.Valid;
 
@@ -28,13 +29,14 @@ import com.application.service.impl.UserServiceImpl;
 public class UserController {
 
 	@Autowired
-	UserServiceImpl userServiceImpl;
+	private UserServiceImpl userServiceImpl;
 
 	@RequestMapping(value = "/users", method = RequestMethod.POST)
 	@ResponseStatus(value = HttpStatus.CREATED)
 	@Loggable
-	public UserEntity createUser(@Valid @RequestBody final User user) {
-		return userServiceImpl.create(user);
+	public String createUser(@Valid @RequestBody final User user) {
+		UserEntity userEntity = userServiceImpl.create(user);
+		return userEntity.getPrimaryKey().getUsername();
 	}
 
 	@RequestMapping(value = "/users/{username}", method = RequestMethod.GET)

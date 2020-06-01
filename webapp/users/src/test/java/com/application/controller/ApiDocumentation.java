@@ -4,8 +4,8 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.io.BufferedWriter;
@@ -13,10 +13,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import com.application.Application;
+import com.application.model.User;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.JUnitRestDocumentation;
-import org.springframework.test.context.ContextConfiguration;
+import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
@@ -41,19 +40,22 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @WebAppConfiguration
 public class ApiDocumentation {
 
+    private static final String USERNAME = "testUsername";
+    private static final String NAME = "Test";
+    private static final String EMAIL_ID = "testuser@abc.com";
+    private static final String PASSWORD = "abc@123";
+    private static final String PHONE_NUMBER = "23424";
     private static String GUID = "ca1b7fad-bbf1-4758-bf8f-9bf25a5e2003";
     private static String FIRST_NAME = "Test";
     private static String LAST_NAME = "User";
-    private static String EMAIL_ID = "testuser@abc.com";
     private static String MESSAGE = "test message";
-    private static String PHONE_NUMBER = "23424";
-    private static String PASSWORD = "test@123";
     private static final String INDEX_FILE = "src/main/asciidoc/userIndex.adoc";
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
     private static boolean doCreate = true;
 
     private UserEntity user;
+    private User user1;
 
     @Rule
     public final JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation("src/main/asciidoc");
@@ -115,6 +117,12 @@ public class ApiDocumentation {
             bw.write("include::" + methodName + "/http-request.adoc[]\n\n");
             bw.write("=== Http Response\n\n");
             bw.write("include::" + methodName + "/http-response.adoc[]\n\n");
+            bw.write("=== Httpie Request\n\n");
+            bw.write("include::" + methodName + "/httpie-request.adoc[]\n\n");
+            bw.write("=== Request Body\n\n");
+            bw.write("include::" + methodName + "/request-body.adoc[]\n\n");
+            bw.write("=== Request Fields\n\n");
+            bw.write("include::" + methodName + "/request-fields.adoc[]\n\n");
             if (isResponseField) {
                 bw.write("=== Response Fields\n\n");
                 bw.write("include::" + methodName + "/response-fields.adoc[]\n\n");
@@ -122,7 +130,7 @@ public class ApiDocumentation {
 
             bw.close();
         } catch (IOException e) {
-            log.warn("Error updating index.adoc with inlude macro");
+            log.warn("Error updating index.adoc with include macro");
         }
     }
 
@@ -132,6 +140,7 @@ public class ApiDocumentation {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
                 .apply(documentationConfiguration(this.restDocumentation)).build();
         user = createEntity(GUID, FIRST_NAME, LAST_NAME, EMAIL_ID, MESSAGE, PHONE_NUMBER, PASSWORD);
+        user1 = userModel(USERNAME, NAME, EMAIL_ID, PASSWORD, PHONE_NUMBER);
     }
 
     @After
@@ -140,18 +149,21 @@ public class ApiDocumentation {
     }
 
     @Test
-    public void createUser() throws JsonProcessingException, Exception {
+    public void createUser() throws Exception {
         this.mockMvc
                 .perform(post("/applications/api/v1/users").contentType(MediaType.APPLICATION_JSON)
-                        .content(this.objectMapper.writeValueAsString(user)))
+                        .content(this.objectMapper.writeValueAsString(user1)))
                 .andExpect(status().isCreated())
                 .andDo(document("{methodName}",
-                        responseFields(fieldWithPath("name").description("Name of the user"),
-                                fieldWithPath("emailId").description("Email Id of the user"),
-                                fieldWithPath("phoneNumber").description("user's phone number"),
-                                fieldWithPath("password").description("Password"))));
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestFields(fieldWithPath("username").description("Username of the user"),
+                                fieldWithPath("name").description("Name of the user"),
+                                fieldWithPath("emailId").description("User Email Id"),
+                                fieldWithPath("password").description("Password"),
+                                fieldWithPath("phoneNumber").description("Phone number of the user"))));
 
-        addIncludeIndex("== Create User request", "createUser", true);
+        addIncludeIndex("== Create User request", "createUser", false);
     }
 
     //@Test
@@ -172,7 +184,7 @@ public class ApiDocumentation {
 
     }
 
-    @Test
+    //@Test
     public void getUserNotFound() throws Exception {
         this.mockMvc
                 .perform(get("/applications/api/v1/users/ca1b7fad-bbf1-4758-bf8f-9bf25a5e20a1")
@@ -180,5 +192,17 @@ public class ApiDocumentation {
                 .andExpect(status().isNotFound()).andDo(document("{methodName}"));
 
         addIncludeIndex("== Get user not found", "getUserNotFound", false);
+    }
+
+    private User userModel(final String username, final String name,
+                           final String emailId, final String password,
+                           final String phoneNumber) {
+        User user = new User();
+        user.setUsername(username);
+        user.setName(name);
+        user.setEmailId(emailId);
+        user.setPassword(password);
+        user.setPhoneNumber(phoneNumber);
+        return user;
     }
 }

@@ -1,14 +1,5 @@
 package com.application.service.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
-import org.apache.velocity.exception.ResourceNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.stereotype.Service;
-
 import com.application.common.CommonConstants;
 import com.application.entity.UserEntity;
 import com.application.entity.UserKey;
@@ -16,17 +7,24 @@ import com.application.logger.Loggable;
 import com.application.model.User;
 import com.application.repository.UserRepository;
 import com.application.service.RestService;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.velocity.exception.ResourceNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 @Service
 public class UserServiceImpl implements RestService {
 
 	@Autowired
-	UserRepository userRepository;
+	private UserRepository userRepository;
 
 	@Autowired
-	ObjectMapper objectMapper;
+	private ObjectMapper objectMapper;
 
 	@Loggable
 	public UserEntity create(final User user) {
@@ -56,8 +54,8 @@ public class UserServiceImpl implements RestService {
 
 	public List<UserEntity> getAll() {
 		Iterable<UserEntity> userIterable = userRepository.findAll();
-		final List<UserEntity> usersList = new ArrayList<UserEntity>();
-		userIterable.forEach(user -> usersList.add(user));
+		final List<UserEntity> usersList = new ArrayList<>();
+		userIterable.forEach(usersList::add);
 		return usersList;
 	}
 	

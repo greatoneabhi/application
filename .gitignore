@@ -5,4 +5,4 @@
 *.adoc
 *.project
 *.classpath
-*.impl
+*.iml
