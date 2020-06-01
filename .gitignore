@@ -1,6 +1,7 @@
 **/target
 **/bin
 **/.settings
+**/.idea
 **/asciidoc
 *.adoc
 *.project
